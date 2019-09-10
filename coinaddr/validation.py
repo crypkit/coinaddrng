@@ -16,6 +16,8 @@ from zope.interface import implementer, provider
 import attr
 import sha3
 import base58check
+import math
+from binascii import unhexlify
 
 from .interfaces import (
     INamedSubclassContainer, IValidator, IValidationRequest,
@@ -76,7 +78,8 @@ class Base58CheckValidator(ValidatorBase):
 
         abytes = base58check.b58decode(
             self.request.address, **self.request.extras)
-        if not abytes[0] in self.request.networks:
+
+        if self.network == "":
             return False
 
         checksum = sha256(sha256(abytes[:-4]).digest()).digest()[:4]
@@ -92,11 +95,17 @@ class Base58CheckValidator(ValidatorBase):
         abytes = base58check.b58decode(
             self.request.address, **self.request.extras)
 
-        nbyte = abytes[0]
         for name, networks in self.request.currency.networks.items():
-            if nbyte in networks:
-                return name
+            for netw in networks:
+                if netw != 0:
+                    prefixlen = math.ceil(math.floor((math.log(netw) / math.log(2)) + 1) / 8)
+                else:
+                    prefixlen = 1
 
+                if abytes[:prefixlen] == unhexlify("%02x" % (netw)):
+                    return name
+
+        return ""
 
 @attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidator)
