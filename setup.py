@@ -2,7 +2,7 @@ import re
 from setuptools import setup, find_packages
 
 
-with open('coinaddr/__init__.py', 'rt') as fd:
+with open('coinaddrng/__init__.py', 'rt') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 
@@ -18,10 +18,10 @@ except ImportError:
 
 
 setup(
-    name='coinaddr',
+    name='coinaddrng',
     version=version,
     description='A crypto-currency address inspection/validation library.',
-    long_description=long_description,
+    #long_description=long_description,
     keywords=[
         'bitcoin',
         'litecoin',
