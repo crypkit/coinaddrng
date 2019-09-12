@@ -102,9 +102,9 @@ class Base58CheckValidator(ValidatorBase):
                 else:
                     prefixlen = 1
 
-                if abytes[:prefixlen] == unhexlify("%02x" % (netw)):
+                address_prefix = [x for x in bytearray(abytes[:prefixlen])]
+                if prefixtodec(address_prefix) == netw:
                     return name
-
         return ""
 
 @attr.s(frozen=True, slots=True, cmp=False)
@@ -246,3 +246,12 @@ def validate(currency, address):
     """
     request = ValidationRequest(currency, address)
     return request.execute()
+
+
+def prefixtodec(prefix):
+    total = 0
+    multiplier = 256
+    for i in range(2,len(prefix)+1):
+        total += prefix[-i]*multiplier
+        multiplier *= multiplier
+    return total+prefix[-1]

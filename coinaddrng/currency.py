@@ -87,3 +87,6 @@ Currency('ethereum-classic', ticker='etc', validator='Ethereum')
 Currency('zcash', ticker='zec', validator='Base58Check', 
          networks=dict(
              main=(0x1cb8, 0x1cbd), test=(0x1d25, 0x1cba)))
+Currency('tezos', ticker='xtz', validator='Base58Check', 
+         networks=dict(
+             both=(0x06a19f, 0x06a1a1, 0x06a1a4, )))
