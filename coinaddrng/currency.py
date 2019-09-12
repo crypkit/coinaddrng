@@ -90,3 +90,6 @@ Currency('zcash', ticker='zec', validator='Base58Check',
 Currency('tezos', ticker='xtz', validator='Base58Check', 
          networks=dict(
              both=(0x06a19f, 0x06a1a1, 0x06a1a4, )))
+Currency('horizen', ticker='zen', validator='Base58Check',
+         networks=dict(
+             both=(0x2089, 0x1cb8)))
