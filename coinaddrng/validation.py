@@ -18,6 +18,7 @@ import sha3
 import base58check
 import math
 from binascii import unhexlify
+import base64
 
 from .interfaces import (
     INamedSubclassContainer, IValidator, IValidationRequest,
@@ -70,8 +71,15 @@ class Base58CheckValidator(ValidatorBase):
     """Validates Base58Check based cryptocurrency addresses."""
 
     name = 'Base58Check'
+    dec_digit_to_base58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+    base58_digit_to_dec = { b58:dec for dec,b58 in enumerate(dec_digit_to_base58) }
+
 
     def validate(self):
+        """extended keys have their own validation"""
+        if len(self.request.address) == 111:
+            return self.validate_extended()
+
         """Validate the address."""
         if 25 > len(self.request.address) > 35:
             return False
@@ -89,11 +97,49 @@ class Base58CheckValidator(ValidatorBase):
         return self.request.address == base58check.b58encode(
             abytes, **self.request.extras)
 
+    def validate_extended(self):
+        ticker = self.request.currency.ticker
+
+        if ticker == 'btc':
+            if self.request.address.decode('utf-8')[:4] not in ('xpub','ypub','zpub','Ypub','Zpub',
+                                                                'tpub','upub','vpub','Upub','Vpub'):
+                return False
+        if ticker == 'ltc':
+            if self.request.address.decode('utf-8')[:4] not in ('Ltub','Mtub','ttub'):
+                return False
+
+        base58_stripped = self.request.address.decode('utf-8').lstrip("1")
+        int_rep = 0
+        for base58_digit in base58_stripped:
+            int_rep *= 58
+            try:
+                int_rep += self.base58_digit_to_dec[base58_digit]
+            except KeyError:
+                return False
+
+        hex_rep = "{:X}".format(int_rep)
+        if len(hex_rep) % 2 == 1:
+            hex_rep = "0" + hex_rep
+        all_bytes =  base64.b16decode(hex_rep).rjust(82, b"\0")
+
+        zero_count = next(zeros for zeros,byte in enumerate(all_bytes) if byte != "\0")
+        if len(self.request.address.decode('utf-8')) - len(base58_stripped) != zero_count:
+            return False
+
+        if sha256(sha256(all_bytes[:-4]).digest()).digest()[:4] != all_bytes[-4:]:
+            return False
+
+        return True
+
+
     @property
     def network(self):
         """Return network derived from network version bytes."""
-        abytes = base58check.b58decode(
-            self.request.address, **self.request.extras)
+        try:
+            abytes = base58check.b58decode(
+                self.request.address, **self.request.extras)
+        except ValueError:
+            return ""
 
         for name, networks in self.request.currency.networks.items():
             for netw in networks:
@@ -101,7 +147,6 @@ class Base58CheckValidator(ValidatorBase):
                     prefixlen = math.ceil(math.floor((math.log(netw) / math.log(2)) + 1) / 8)
                 else:
                     prefixlen = 1
-
                 address_prefix = [x for x in bytearray(abytes[:prefixlen])]
                 if prefixtodec(address_prefix) == netw:
                     return name
@@ -253,5 +298,5 @@ def prefixtodec(prefix):
     multiplier = 256
     for i in range(2,len(prefix)+1):
         total += prefix[-i]*multiplier
-        multiplier *= multiplier
+        multiplier *= 256
     return total+prefix[-1]

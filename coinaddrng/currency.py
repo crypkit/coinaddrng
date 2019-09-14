@@ -61,13 +61,15 @@ class Currency(metaclass=CurrencyMeta):
 
 Currency('bitcoin', ticker='btc', validator='Base58Check',
          networks=dict(
-             main=(0x00, 0x05), test=(0x6f, 0xc4)))
+             main=(0x00, 0x05, 0x0488b21e, 0x049d7cb2, 0x04b24746, 0x0295b43f, 0x02aa7ed3), 
+             test=(0x6f, 0xc4, 0x043587cf, 0x044a5262, 0x045f1cf6, 0x024289ef, 0x02575483)))
 Currency('bitcoin-cash', ticker='bch', validator='Base58Check',
          networks=dict(
              main=(0x00, 0x05), test=(0x6f, 0xc4)))
 Currency('litecoin', ticker='ltc', validator='Base58Check',
          networks=dict(
-             main=(0x30, 0x05, 0x32), test=(0x6f, 0xc4)))
+             main=(0x30, 0x05, 0x32, 0x019da462, 0x01b26ef6), 
+             test=(0x6f, 0xc4, 0x0436f6e1)))
 Currency('dogecoin', ticker='doge', validator='Base58Check',
          networks=dict(
              main=(0x1e, 0x16), test=(0x71, 0xc4)))
