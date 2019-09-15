@@ -71,6 +71,7 @@ class Base58CheckValidator(ValidatorBase):
     """Validates Base58Check based cryptocurrency addresses."""
 
     name = 'Base58Check'
+    # base58 alphabet representation
     dec_digit_to_base58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
     base58_digit_to_dec = { b58:dec for dec,b58 in enumerate(dec_digit_to_base58) }
 
@@ -101,24 +102,34 @@ class Base58CheckValidator(ValidatorBase):
         if self.network == "":
             return False
 
+        # strip leading "zeros" (the "1" digit with base58)
         base58_stripped = self.request.address.decode('utf-8').lstrip("1")
+        # convert base58 to decimal
         int_rep = 0
         for base58_digit in base58_stripped:
             int_rep *= 58
             try:
                 int_rep += self.base58_digit_to_dec[base58_digit]
             except KeyError:
+                # not a valid base58 digit -> invalid address
                 return False
 
+        # encode it to base64
         hex_rep = "{:X}".format(int_rep)
+        # if the length is odd, add leading zero (needed for b16decode)
         if len(hex_rep) % 2 == 1:
             hex_rep = "0" + hex_rep
+        # decode it into a binary string, padded with zeros
+        # 72 bytes (extended key size) + 4 bytes (prefix version bytes)
         all_bytes =  base64.b16decode(hex_rep).rjust(82, b"\0")
 
-        zero_count = next(zeros for zeros,byte in enumerate(all_bytes) if byte != "\0")
+        # count leading zeros
+        zero_count = next(zeros for zeros,byte in enumerate(all_bytes) if byte != 0)
+        # compare it with the number of leading zeros lstripped at the beginning
         if len(self.request.address.decode('utf-8')) - len(base58_stripped) != zero_count:
             return False
 
+        # checking if the checksum is valid
         if sha256(sha256(all_bytes[:-4]).digest()).digest()[:4] != all_bytes[-4:]:
             return False
 
@@ -137,6 +148,7 @@ class Base58CheckValidator(ValidatorBase):
         for name, networks in self.request.currency.networks.items():
             for netw in networks:
                 if netw != 0:
+                    # count the prefix length in bytes
                     prefixlen = math.ceil(math.floor((math.log(netw) / math.log(2)) + 1) / 8)
                 else:
                     prefixlen = 1
