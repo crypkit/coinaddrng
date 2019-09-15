@@ -98,15 +98,8 @@ class Base58CheckValidator(ValidatorBase):
             abytes, **self.request.extras)
 
     def validate_extended(self):
-        ticker = self.request.currency.ticker
-
-        if ticker == 'btc':
-            if self.request.address.decode('utf-8')[:4] not in ('xpub','ypub','zpub','Ypub','Zpub',
-                                                                'tpub','upub','vpub','Upub','Vpub'):
-                return False
-        if ticker == 'ltc':
-            if self.request.address.decode('utf-8')[:4] not in ('Ltub','Mtub','ttub'):
-                return False
+        if self.network == "":
+            return False
 
         base58_stripped = self.request.address.decode('utf-8').lstrip("1")
         int_rep = 0
