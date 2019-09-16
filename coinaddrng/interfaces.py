@@ -101,3 +101,5 @@ class IValidationResult(Interface):
     valid = Attribute('Boolean representing whether the address is valid')
     network = Attribute(
         'Name of network the address belongs to if applicable')
+    is_extended = Attribute('boolean representing whether the address is extended key or not')
+

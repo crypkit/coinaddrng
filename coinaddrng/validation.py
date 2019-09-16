@@ -60,6 +60,9 @@ class ValidatorBase(metaclass=ValidatorMeta):
     def validate(self):
         """Validate the address type, return True if valid, else False."""
 
+    def validate_extended(self):
+        """Validate the extended keys, return True if valid, else False."""
+
     @property
     def network(self):
         """Return the network derived from the network version bytes."""
@@ -99,6 +102,9 @@ class Base58CheckValidator(ValidatorBase):
             abytes, **self.request.extras)
 
     def validate_extended(self):
+        if len(self.request.address) != 111:
+            return False
+
         if self.network == "":
             return False
 
@@ -184,6 +190,8 @@ class EthereumValidator(ValidatorBase):
                 return False
         return True
 
+    def validate_extended(self):
+        return False
 
     #def validate(self):
     #    """Validate the address."""
@@ -246,7 +254,8 @@ class ValidationRequest:
             ticker=self.currency.ticker,
             address=self.address,
             valid=validator.validate(),
-            network=validator.network
+            network=validator.network,
+            is_extended=validator.validate_extended()
             )
 
 
@@ -270,6 +279,9 @@ class ValidationResult:
     network = attr.ib(
         type=str,
         validator=attr.validators.instance_of(str))
+    is_extended = attr.ib(
+        type=bool,
+        validator=attr.validators.instance_of(bool))
 
     def __bool__(self):
         return self.valid
