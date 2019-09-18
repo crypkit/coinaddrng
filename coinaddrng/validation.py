@@ -19,6 +19,7 @@ import base58check
 import math
 from binascii import unhexlify
 import base64
+import crc16
 
 from .interfaces import (
     INamedSubclassContainer, IValidator, IValidationRequest,
@@ -162,6 +163,64 @@ class Base58CheckValidator(ValidatorBase):
                 if prefixtodec(address_prefix) == netw:
                     return name
         return ""
+
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class EosValidator(ValidatorBase):
+    """Validates EOS cryptocurrency addresses."""
+
+    name = 'EOS'
+
+    def validate(self):
+        if len(self.request.address) != 12:
+            return False
+        eos_pattern = re.compile('^[a-z]{1}[a-z1-5.]{10}[a-z1-5]{1}$')
+        if eos_pattern.match(self.request.address.decode('utf-8')) == None:
+            return False
+        return True
+
+    def validate_extended(self):
+        return False
+
+    @property
+    def network(self):
+        return ''
+
+
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class StellarValidator(ValidatorBase):
+    """Validates Stellar cryptocurrency addresses."""
+
+    name = 'Stellar'
+
+    def validate(self):
+        try:
+            decoded_address = base64.b32decode(self.request.address)
+        except:
+            return False
+
+        version_byte = decoded_address[0]
+        payload = decoded_address[0:-2]
+        expected_checksum = int.from_bytes(decoded_address[-2:], byteorder='little')
+
+        if version_byte != 6 << 3:  # ed25519PublicKey
+            return False
+
+        checksum = crc16.crc16xmodem(payload)
+
+        if checksum != expected_checksum:
+            return False
+
+        return True
+
+    def validate_extended(self):
+        return False
+
+    @property
+    def network(self):
+        return ''
+
 
 @attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidator)

@@ -95,3 +95,5 @@ Currency('tezos', ticker='xtz', validator='Base58Check',
 Currency('horizen', ticker='zen', validator='Base58Check',
          networks=dict(
              both=(0x2089, 0x1cb8)))
+Currency('eos', ticker='eos', validator='EOS')
+Currency('stellar', ticker='xlm', validator='Stellar')

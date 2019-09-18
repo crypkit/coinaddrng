@@ -16,9 +16,10 @@ Usage::
 :license: MIT, see LICENSE for more details.
 """
 
-__version__ = '1.0.7'
+__version__ = '1.0.9'
 
 from . import interfaces, currency, validation
 from .validation import validate
 from .currency import Currency
-from .validation import ValidatorBase, Base58CheckValidator, EthereumValidator
+from .validation import ValidatorBase, Base58CheckValidator, EthereumValidator, EosValidator, StellarValidator
+
