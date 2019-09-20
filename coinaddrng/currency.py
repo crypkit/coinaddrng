@@ -97,3 +97,6 @@ Currency('horizen', ticker='zen', validator='Base58Check',
              both=(0x2089, 0x1cb8)))
 Currency('eos', ticker='eos', validator='EOS')
 Currency('stellar', ticker='xlm', validator='Stellar')
+Currency('ravencoin', ticker='rvn', validator='Base58Check',
+        networks=dict(
+             main=(0x3c,0x0488B21E), test=(0x6f,0x043587CF)))
