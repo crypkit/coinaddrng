@@ -103,3 +103,6 @@ Currency('ravencoin', ticker='rvn', validator='Base58Check',
 Currency('tronix', ticker='trx', validator='Base58Check',
         networks=dict(
              main=(0x41,), test=(0xa0,)))
+Currency('decred', ticker='dcr', validator='DecredCheck',
+        networks=dict(
+             main=(0x073f,0x071a), test=(0x0f21,0x0efc)))

@@ -20,6 +20,7 @@ import math
 from binascii import unhexlify
 import base64
 import crc16
+from blake256 import blake256
 
 from .interfaces import (
     INamedSubclassContainer, IValidator, IValidationRequest,
@@ -67,6 +68,8 @@ class ValidatorBase(metaclass=ValidatorMeta):
     @property
     def network(self):
         """Return the network derived from the network version bytes."""
+
+
 
 
 @attr.s(frozen=True, slots=True, cmp=False)
@@ -165,6 +168,40 @@ class Base58CheckValidator(ValidatorBase):
                 if prefixtodec(address_prefix) == netw:
                     return name
         return ""
+
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class DecredValidator(Base58CheckValidator):
+    """Validates Decred cryptocurrency addresses."""
+
+    name = 'DecredCheck'
+
+
+    def validate(self):
+        decoded_address = base58check.b58decode(self.request.address)
+        # decoded address has to be 26 bytes long
+        if len(decoded_address) != 26:
+            return False
+
+        # original one has to start with D,T,S or R
+        if not self.request.address.startswith((b'D', b'T', b'S', b'R')):
+            return False
+
+        expected_checksum = decoded_address[-4:]
+
+        version_bytes = int.from_bytes(decoded_address[:2],byteorder='big')
+
+        if self.network == "":
+            return False
+
+        checksum = blake256.blake_hash(blake256.blake_hash(decoded_address[:-4]))[:4]
+
+        # double blake256 checksum needs to be equal with the expected checksum
+        if checksum != expected_checksum:
+            return False
+
+        return True
+
 
 @attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidator)
