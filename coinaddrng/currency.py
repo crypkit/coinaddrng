@@ -105,4 +105,4 @@ Currency('tronix', ticker='trx', validator='Base58Check',
              main=(0x41,), test=(0xa0,)))
 Currency('decred', ticker='dcr', validator='DecredCheck',
         networks=dict(
-             main=(0x073f,0x071a), test=(0x0f21,0x0efc)))
+             main=(0x073f,0x071a,0x02fda926), test=(0x0f21,0x0efc,0x043587d1)))

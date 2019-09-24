@@ -105,7 +105,7 @@ class Base58CheckValidator(ValidatorBase):
         return self.request.address == base58check.b58encode(
             abytes, **self.request.extras)
 
-    def validate_extended(self):
+    def validate_extended(self,checksum_algo='sha256'):
         if len(self.request.address) != 111:
             return False
 
@@ -139,8 +139,16 @@ class Base58CheckValidator(ValidatorBase):
         if len(self.request.address.decode('utf-8')) - len(base58_stripped) != zero_count:
             return False
 
+        if checksum_algo == 'blake256':
+            checksum = blake256.blake_hash(blake256.blake_hash(all_bytes[:-4]))[:4]
+        elif checksum_algo == 'sha256':
+            checksum = sha256(sha256(all_bytes[:-4]).digest()).digest()[:4]
+        else:
+            return False
+
+
         # checking if the checksum is valid
-        if sha256(sha256(all_bytes[:-4]).digest()).digest()[:4] != all_bytes[-4:]:
+        if checksum != all_bytes[-4:]:
             return False
 
         return True
@@ -178,6 +186,9 @@ class DecredValidator(Base58CheckValidator):
 
 
     def validate(self):
+        if len(self.request.address) == 111:
+            return self.validate_extended(checksum_algo='blake256')
+
         decoded_address = base58check.b58decode(self.request.address)
         # decoded address has to be 26 bytes long
         if len(decoded_address) != 26:
