@@ -44,7 +44,8 @@ setup(
         'pysha3>=1.0.2',
         'base58check>=1.0.1',
         'zope.interface>=4.4.3',
-        'crc16>=0.1.1'
+        'crc16>=0.1.1',
+        'blake256>=0.1.1'
     ],
     zip_safe=False,
     packages=find_packages(),

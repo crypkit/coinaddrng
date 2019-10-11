@@ -69,6 +69,9 @@ class ValidatorBase(metaclass=ValidatorMeta):
     def network(self):
         """Return the network derived from the network version bytes."""
 
+    @property
+    def address_type(self):
+        """Return the address type derived from the network version bytes."""
 
 
 
@@ -176,6 +179,31 @@ class Base58CheckValidator(ValidatorBase):
                 if prefixtodec(address_prefix) == netw:
                     return name
         return ""
+
+    @property
+    def address_type(self):
+        """Return address type derived from network version bytes."""
+        if len(self.request.address) == 0:
+            return ""
+        try:
+            abytes = base58check.b58decode(
+                self.request.address, **self.request.extras)
+        except ValueError:
+            return ""
+
+        for name, networks in self.request.currency.address_types.items():
+            for netw in networks:
+                if netw != 0:
+                    # count the prefix length in bytes
+                    prefixlen = math.ceil(math.floor((math.log(netw) / math.log(2)) + 1) / 8)
+                else:
+                    prefixlen = 1
+                address_prefix = [x for x in bytearray(abytes[:prefixlen])]
+                if prefixtodec(address_prefix) == netw:
+                    return name
+        return ""
+
+
 
 @attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidator)
@@ -355,6 +383,11 @@ class ValidationRequest:
         networks = tuple(self.currency.networks.values())
         return functools.reduce(operator.concat, networks)
 
+    @property
+    def address_types(self):
+        address_types = tuple(self.currency.address_types.values())
+        return functools.reduce(operator.concat, address_types)
+
     def execute(self):
         """Execute this request and return the result."""
         validator = Validators.get(self.currency.validator)(self)
@@ -364,6 +397,7 @@ class ValidationRequest:
             address=self.address,
             valid=validator.validate(),
             network=validator.network,
+            address_type=validator.address_type,
             is_extended=validator.validate_extended()
             )
 
@@ -391,6 +425,9 @@ class ValidationResult:
     is_extended = attr.ib(
         type=bool,
         validator=attr.validators.instance_of(bool))
+    address_type = attr.ib(
+        type=str,
+        validator=attr.validators.instance_of(str))
 
     def __bool__(self):
         return self.valid

@@ -53,6 +53,10 @@ class Currency(metaclass=CurrencyMeta):
         type=dict,
         validator=attr.validators.optional(attr.validators.instance_of(dict)),
         default=attr.Factory(dict))
+    address_types = attr.ib(
+        type=dict,
+        validator=attr.validators.optional(attr.validators.instance_of(dict)),
+        default=attr.Factory(dict))
     charset = attr.ib(
         type=bytes,
         validator=attr.validators.optional(attr.validators.instance_of(bytes)),
@@ -68,7 +72,8 @@ Currency('bitcoin-cash', ticker='bch', validator='Base58Check',
              main=(0x00, 0x05), test=(0x6f, 0xc4)))
 Currency('litecoin', ticker='ltc', validator='Base58Check',
          networks=dict(
-             main=(0x30, 0x05, 0x32, 0x019da462, 0x01b26ef6), 
+             main=(0x30, 0x05, 0x32, 0x019da462, 0x01b26ef6,  
+                   0x488B21E, 0x49D7CB2, 0x4B24746, 0x295B43F, 0x2AA7ED3), 
              test=(0x6f, 0xc4, 0x0436f6e1)))
 Currency('dogecoin', ticker='doge', validator='Base58Check',
          networks=dict(
@@ -91,7 +96,10 @@ Currency('zcash', ticker='zec', validator='Base58Check',
              main=(0x1cb8, 0x1cbd), test=(0x1d25, 0x1cba)))
 Currency('tezos', ticker='xtz', validator='Base58Check', 
          networks=dict(
-             both=(0x06a19f, 0x06a1a1, 0x06a1a4, )))
+             both=(0x06a19f, 0x06a1a1, 0x06a1a4, )),
+         address_types=dict(
+             originated_account=(0x025A79,), 
+             implicit_account=(0x06a19f, 0x06a1a1, 0x06a1a4,)))
 Currency('horizen', ticker='zen', validator='Base58Check',
          networks=dict(
              both=(0x2089, 0x1cb8)))
@@ -105,4 +113,8 @@ Currency('tronix', ticker='trx', validator='Base58Check',
              main=(0x41,), test=(0xa0,)))
 Currency('decred', ticker='dcr', validator='DecredCheck',
         networks=dict(
-             main=(0x073f,0x071a,0x02fda926), test=(0x0f21,0x0efc,0x043587d1)))
+             main=(0x073f,0x071a,0x02fda926), test=(0x0f21,0x0efc,0x043587d1)),
+        address_types=dict(
+             address=(0x073f,0x0f21), ticket=(0x071a,0x0efc),
+             xpubkey=(0x02fda926,0x043587d1)))
+
