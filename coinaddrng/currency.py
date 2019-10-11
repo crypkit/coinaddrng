@@ -96,9 +96,9 @@ Currency('zcash', ticker='zec', validator='Base58Check',
              main=(0x1cb8, 0x1cbd), test=(0x1d25, 0x1cba)))
 Currency('tezos', ticker='xtz', validator='Base58Check', 
          networks=dict(
-             both=(0x06a19f, 0x06a1a1, 0x06a1a4, )),
+             both=(0x06a19f, 0x06a1a1, 0x06a1a4, 0x25a79 )),
          address_types=dict(
-             originated_account=(0x025A79,), 
+             originated_account=(0x025a79,), 
              implicit_account=(0x06a19f, 0x06a1a1, 0x06a1a4,)))
 Currency('horizen', ticker='zen', validator='Base58Check',
          networks=dict(
