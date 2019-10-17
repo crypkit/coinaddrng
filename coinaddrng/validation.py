@@ -17,10 +17,12 @@ import attr
 import sha3
 import base58check
 import math
-from binascii import unhexlify
+from binascii import unhexlify,crc32
 import base64
 import crc16
 from blake256 import blake256
+import cbor
+import bech32
 
 from .interfaces import (
     INamedSubclassContainer, IValidator, IValidationRequest,
@@ -72,8 +74,64 @@ class ValidatorBase(metaclass=ValidatorMeta):
     @property
     def address_type(self):
         """Return the address type derived from the network version bytes."""
+        return 'address'
 
 
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class CosmosValidator(ValidatorBase):
+
+    name = 'CosmosCheck'
+    hrp_table = ("cosmos","cosmospub","cosmosvalcons","cosmosvalconspub","cosmosvaloper","cosmosvaloperpub")
+
+    def validate(self):
+        decoded_address = bech32.bech32_decode(self.request.address.decode('utf-8'))
+        hrp = decoded_address[0]
+        data = decoded_address[1]
+
+        if hrp not in self.hrp_table:
+            return False
+
+        if data is None:
+            return False
+
+        """
+        test = []
+        for i in data:
+            test.append(hex(i))
+
+        print(test)
+
+        test = []
+        converted  = bech32.convertbits(decoded_address[1], 5, 8, False)
+        for i in converted:
+            test.append(hex(i))
+
+        print(test)
+        """
+
+        return True
+
+
+    def validate_extended(self):
+        return False
+
+    @property
+    def network(self):
+        return ""
+
+    @property
+    def address_type(self):
+        if len(self.request.address) == 0:
+            return ""
+
+        decoded_address = bech32.bech32_decode(self.request.address.decode('utf-8'))
+        hrp = decoded_address[0]
+
+        if hrp not in self.hrp_table:
+            return ""
+
+        return hrp
 
 @attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidator)
@@ -98,7 +156,7 @@ class Base58CheckValidator(ValidatorBase):
         abytes = base58check.b58decode(
             self.request.address, **self.request.extras)
 
-        if self.network == "":
+        if self.network == '':
             return False
 
         checksum = sha256(sha256(abytes[:-4]).digest()).digest()[:4]
@@ -112,7 +170,7 @@ class Base58CheckValidator(ValidatorBase):
         if len(self.request.address) != 111:
             return False
 
-        if self.network == "":
+        if self.network == '':
             return False
 
         # strip leading "zeros" (the "1" digit with base58)
@@ -230,7 +288,7 @@ class DecredValidator(Base58CheckValidator):
 
         version_bytes = int.from_bytes(decoded_address[:2],byteorder='big')
 
-        if self.network == "":
+        if self.network == '':
             return False
 
         checksum = blake256.blake_hash(blake256.blake_hash(decoded_address[:-4]))[:4]
@@ -240,6 +298,31 @@ class DecredValidator(Base58CheckValidator):
             return False
 
         return True
+
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class CardanoValidator(Base58CheckValidator):
+    """Validates Cardano cryptocurrency addresses."""
+
+    name = 'CardanoCheck'
+
+
+    def validate(self):
+        decoded_address = base58check.b58decode(self.request.address)
+
+        if self.network == '':
+            return False
+
+        decoded_address = cbor.loads(decoded_address)
+        tagged_address = decoded_address[0]
+        expected_checksum = decoded_address[1]
+        checksum = crc32(tagged_address.value)
+
+        if checksum != expected_checksum:
+            return False
+
+        return True
+
 
 
 @attr.s(frozen=True, slots=True, cmp=False)

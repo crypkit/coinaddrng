@@ -117,4 +117,8 @@ Currency('decred', ticker='dcr', validator='DecredCheck',
         address_types=dict(
              address=(0x073f,0x0f21), ticket=(0x071a,0x0efc),
              xpubkey=(0x02fda926,0x043587d1)))
+Currency('cardano', ticker='ada', validator='CardanoCheck',
+        networks=dict(
+             main=(0x82D818584283581C,), test=(0x82D818582883581C,)))
 
+Currency('cosmos', ticker='atom', validator='CosmosCheck')

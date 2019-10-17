@@ -45,7 +45,9 @@ setup(
         'base58check>=1.0.1',
         'zope.interface>=4.4.3',
         'crc16>=0.1.1',
-        'blake256>=0.1.1'
+        'blake256>=0.1.1',
+        'cbor>=1.0.0',
+        'bech32>=1.1.0'
     ],
     zip_safe=False,
     packages=find_packages(),
