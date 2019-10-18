@@ -219,12 +219,12 @@ class Base58CheckValidator(ValidatorBase):
     def network(self):
         """Return network derived from network version bytes."""
         if len(self.request.address) == 0:
-            return ""
+            return ''
         try:
             abytes = base58check.b58decode(
                 self.request.address, **self.request.extras)
         except ValueError:
-            return ""
+            return ''
 
         for name, networks in self.request.currency.networks.items():
             for netw in networks:
@@ -236,18 +236,18 @@ class Base58CheckValidator(ValidatorBase):
                 address_prefix = [x for x in bytearray(abytes[:prefixlen])]
                 if prefixtodec(address_prefix) == netw:
                     return name
-        return ""
+        return ''
 
     @property
     def address_type(self):
         """Return address type derived from network version bytes."""
         if len(self.request.address) == 0:
-            return ""
+            return ''
         try:
             abytes = base58check.b58decode(
                 self.request.address, **self.request.extras)
         except ValueError:
-            return ""
+            return ''
 
         for name, networks in self.request.currency.address_types.items():
             for netw in networks:
@@ -259,7 +259,11 @@ class Base58CheckValidator(ValidatorBase):
                 address_prefix = [x for x in bytearray(abytes[:prefixlen])]
                 if prefixtodec(address_prefix) == netw:
                     return name
-        return ""
+
+        if len(self.request.currency.address_types.items()) == 0:
+            return 'address'
+        else:
+            return ''
 
 
 
@@ -516,12 +520,12 @@ class ValidationResult:
         return self.valid
 
 
-def validate(currency, address):
+def validate(currency_name, address):
     """Validate the given address according to currency type.
 
     This is the main entrypoint for using this library.
 
-    :param currency str: The name or ticker code of the cryptocurrency.
+    :param currency_name str: The name or ticker code of the cryptocurrency.
     :param address (bytes, str): The crytocurrency address to validate.
     :return: a populated ValidationResult object
     :rtype: :inst:`ValidationResult`
@@ -535,9 +539,23 @@ def validate(currency, address):
       ...              valid=True, network='main')
 
     """
-    request = ValidationRequest(currency, address)
-    return request.execute()
 
+    tickers = [currency.Currencies.instances[curr].ticker for curr in currency.Currencies.instances]
+    currencies = [currency.Currencies.instances[curr].name for curr in currency.Currencies.instances]
+
+    if currency_name in tickers or currency_name in currencies:
+        request = ValidationRequest(currency_name, address)
+        return request.execute()
+    else:
+        return ValidationResult(
+            name='',
+            ticker=currency_name,
+            address=bytes(address,'utf-8'),
+            valid=True,
+            network='',
+            address_type='address',
+            is_extended=False
+            )
 
 def prefixtodec(prefix):
     total = 0
