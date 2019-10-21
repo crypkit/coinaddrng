@@ -76,6 +76,41 @@ class ValidatorBase(metaclass=ValidatorMeta):
         """Return the address type derived from the network version bytes."""
         return 'address'
 
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class BNBValidator(ValidatorBase):
+
+    name = 'BNBCheck'
+
+    def validate(self):
+        decoded_address = bech32.bech32_decode(self.request.address.decode('utf-8'))
+        hrp = decoded_address[0]
+        data = decoded_address[1]
+
+        if self.network == "":
+            return False
+
+        if data is None:
+            return False
+
+        return True
+
+
+    def validate_extended(self):
+        return False
+
+    @property
+    def network(self):
+        decoded_address = bech32.bech32_decode(self.request.address.decode('utf-8'))
+        hrp = decoded_address[0]
+
+        for name, networks in self.request.currency.networks.items():
+            for netw in networks:
+                if hrp == netw:
+                    return name
+
+        return ""
+
 
 @attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidator)
