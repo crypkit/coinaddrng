@@ -134,3 +134,8 @@ Currency('binancecoin', ticker='bnb', validator='BNBCheck',
 Currency('groestlcoin', ticker='grs', validator='GRSCheck',
         networks=dict(
             main=('F','3'), test=('m','n')))
+
+Currency('ontology', ticker='ont', validator='Base58Check',
+        networks=dict(
+            both=(0x17,)))
+
