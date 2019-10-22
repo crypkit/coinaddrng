@@ -130,3 +130,7 @@ Currency('cosmos', ticker='atom', validator='CosmosCheck')
 Currency('binancecoin', ticker='bnb', validator='BNBCheck',
         networks=dict(
             main=("bnb",), test=("tbnb",)))
+
+Currency('groestlcoin', ticker='grs', validator='GRSCheck',
+        networks=dict(
+            main=('F','3'), test=('m','n')))

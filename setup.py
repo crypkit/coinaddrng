@@ -47,7 +47,8 @@ setup(
         'crc16>=0.1.1',
         'blake256>=0.1.1',
         'cbor>=1.0.0',
-        'bech32>=1.1.0'
+        'bech32>=1.1.0',
+        'groestlcoin-hash2>=1.1.1'
     ],
     zip_safe=False,
     packages=find_packages(),

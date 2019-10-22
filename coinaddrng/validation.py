@@ -23,6 +23,7 @@ import crc16
 from blake256 import blake256
 import cbor
 import bech32
+import groestlcoin_hash2
 
 from .interfaces import (
     INamedSubclassContainer, IValidator, IValidationRequest,
@@ -75,6 +76,39 @@ class ValidatorBase(metaclass=ValidatorMeta):
     def address_type(self):
         """Return the address type derived from the network version bytes."""
         return 'address'
+
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class GRSValidator(ValidatorBase):
+
+    name = 'GRSCheck'
+
+    def validate(self):
+        # groestlcoin address is 34 bytes long
+        if len(self.request.address) != 34:
+            return False
+
+        decoded = base58check.b58decode(self.request.address)
+        hash_str = decoded[0:21]
+        checksum = groestlcoin_hash2.groestl_hash(hash_str)[:4]
+        expected_checksum = decoded[21:]
+
+        if checksum != expected_checksum:
+            return False
+
+        return True
+
+    def validate_extended(self):
+        return False
+
+    @property
+    def network(self):
+        for name, networks in self.request.currency.networks.items():
+            for netw in networks:
+                if self.request.address.startswith(netw.encode('utf-8')):
+                    return name
+
+        return ""
 
 @attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidator)
