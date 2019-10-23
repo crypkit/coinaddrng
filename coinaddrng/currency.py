@@ -138,4 +138,5 @@ Currency('groestlcoin', ticker='grs', validator='GRSCheck',
 Currency('ontology', ticker='ont', validator='Base58Check',
         networks=dict(
             both=(0x17,)))
-
+Currency('boscoin', ticker='bos', validator='Stellar')
+Currency('vechain', ticker='vet', validator='Ethereum')
