@@ -87,8 +87,11 @@ class GRSValidator(ValidatorBase):
         # groestlcoin address is 34 bytes long
         if len(self.request.address) != 34:
             return False
+        try:
+            decoded = base58check.b58decode(self.request.address)
+        except ValueError:
+            return False
 
-        decoded = base58check.b58decode(self.request.address)
         hash_str = decoded[0:21]
         checksum = groestlcoin_hash2.groestl_hash(hash_str)[:4]
         expected_checksum = decoded[21:]
@@ -222,8 +225,11 @@ class Base58CheckValidator(ValidatorBase):
         if 25 > len(self.request.address) > 35:
             return False
 
-        abytes = base58check.b58decode(
-            self.request.address, **self.request.extras)
+        try:
+            abytes = base58check.b58decode(
+                self.request.address, **self.request.extras)
+        except ValueError:
+            return False
 
         if self.network == '':
             return False
@@ -348,7 +354,11 @@ class DecredValidator(Base58CheckValidator):
         if len(self.request.address) == 111:
             return self.validate_extended(checksum_algo='blake256')
 
-        decoded_address = base58check.b58decode(self.request.address)
+        try:
+            decoded_address = base58check.b58decode(self.request.address)
+        except ValueError:
+            return False
+
         # decoded address has to be 26 bytes long
         if len(decoded_address) != 26:
             return False
@@ -381,7 +391,11 @@ class CardanoValidator(Base58CheckValidator):
 
 
     def validate(self):
-        decoded_address = base58check.b58decode(self.request.address)
+        try:
+            decoded_address = base58check.b58decode(self.request.address)
+        except ValueError:
+            return False
+
 
         if self.network == '':
             return False
