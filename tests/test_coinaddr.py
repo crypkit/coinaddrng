@@ -45,9 +45,7 @@ class TestCoinaddr(unittest.TestCase):
     def test_validation_by_name(self):
         for name, ticker, addr, net in TEST_DATA:
             with self.subTest(name=name, address=addr, net=net):
-                print(addr, name)
                 res = coinaddrng.validate(name, addr)
-                print(res)
                 self.assertEqual(name, res.name)
                 self.assertEqual(ticker, res.ticker)
                 self.assertEqual(addr, res.address)
