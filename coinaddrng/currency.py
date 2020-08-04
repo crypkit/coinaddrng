@@ -140,3 +140,4 @@ Currency('ontology', ticker='ont', validator='Base58Check',
             both=(0x17,)))
 Currency('boscoin', ticker='bos', validator='Stellar')
 Currency('vechain', ticker='vet', validator='Ethereum')
+Currency('terramoney', ticker='luna', validator='TerraMoney')
