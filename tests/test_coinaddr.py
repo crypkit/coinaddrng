@@ -1,13 +1,13 @@
 import unittest
 
-import coinaddrng.coinaddrng as coinaddrng
+import coinaddrng
 
-from coinaddrng.coinaddrng.interfaces import (
+from coinaddrng.interfaces import (
     INamedSubclassContainer, INamedInstanceContainer, ICurrency, IValidator,
     IValidationRequest, IValidationResult
     )
-from coinaddrng.coinaddrng.currency import Currencies, Currency
-from coinaddrng.coinaddrng.validation import (
+from coinaddrng.currency import Currencies, Currency
+from coinaddrng.validation import (
     Validators, ValidatorBase, ValidationRequest, ValidationResult,
     Base58CheckValidator, EthereumValidator
     )
@@ -17,6 +17,7 @@ TEST_DATA = [
     ('bitcoin', 'btc', b'1BoatSLRHtKNngkdXEeobR76b53LETtpyT', 'main'),
     ('bitcoin', 'btc', b'n2nzi7xDTrMVK9stGpbK3BtrpBCJfH7LRQ', 'test'),
     ('bitcoin', 'btc', b'3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC', 'main'),
+    ('bitcoin', 'btc', b'bc1qxneu85dnhx33asv8da45x55qyeu44ek9h3vngx', 'main'),
     ('bitcoin-cash', 'bch', b'1BoatSLRHtKNngkdXEeobR76b53LETtpyT', 'main'),
     ('bitcoin-cash', 'bch', b'n2nzi7xDTrMVK9stGpbK3BtrpBCJfH7LRQ', 'test'),
     ('bitcoin-cash', 'bch', b'3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC', 'main'),
@@ -38,6 +39,10 @@ TEST_DATA = [
 
 WRONG_DATA = [
     ('ethereum', 'eth', b'0000001', 'both'),
+]
+
+WRONG_ADDRESSES = [
+    '0', 'A', 'Z', '0x', '0123', 'ABCD', '0xaBaB', '987654321aBcD'
 ]
 
 
@@ -77,6 +82,13 @@ class TestCoinaddr(unittest.TestCase):
                 self.assertEqual(addr, res.address)
                 self.assertEqual(True, res.valid)
                 self.assertEqual(net, res.network)
+
+    def test_validation_wrong_data(self):
+        for currency in Currencies.instances.values():
+            for addr in WRONG_ADDRESSES:
+                with self.subTest(name=currency.name, address=addr):
+                    res = coinaddrng.validate(currency.name, addr)
+                    self.assertEqual(res.valid, False)
 
 
 class TestExtendingCoinaddr(unittest.TestCase):

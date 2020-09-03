@@ -1,7 +1,7 @@
 import unittest
 
-from coinaddr.interfaces import INamedInstanceContainer, ICurrency
-from coinaddr.currency import Currencies, Currency
+from coinaddrng.interfaces import INamedInstanceContainer, ICurrency
+from coinaddrng.currency import Currencies, Currency
 
 
 class TestCurrency(unittest.TestCase):

@@ -63,21 +63,25 @@ class Currency(metaclass=CurrencyMeta):
         default=None)
 
 
-Currency('bitcoin', ticker='btc', validator='Base58Check',
+Currency('bitcoin', ticker='btc', validator='BitcoinBasedCheck',
          networks=dict(
-             main=(0x00, 0x05, 0x0488b21e, 0x049d7cb2, 0x04b24746, 0x0295b43f, 0x02aa7ed3), 
-             test=(0x6f, 0xc4, 0x043587cf, 0x044a5262, 0x045f1cf6, 0x024289ef, 0x02575483)))
+             main=(0x00, 0x05, 0x0488b21e, 0x049d7cb2, 0x04b24746, 0x0295b43f,
+                   0x02aa7ed3, 'bc'),
+             test=(0x6f, 0xc4, 0x043587cf, 0x044a5262, 0x045f1cf6, 0x024289ef,
+                   0x02575483, 'tb')))
 Currency('bitcoin-sv', ticker='bsv', validator='Base58Check',
          networks=dict(
-             main=(0x00, 0x05, 0x0488b21e, 0x049d7cb2, 0x04b24746, 0x0295b43f, 0x02aa7ed3), 
-             test=(0x6f, 0xc4, 0x043587cf, 0x044a5262, 0x045f1cf6, 0x024289ef, 0x02575483)))
+             main=(0x00, 0x05, 0x0488b21e, 0x049d7cb2, 0x04b24746, 0x0295b43f,
+                   0x02aa7ed3),
+             test=(0x6f, 0xc4, 0x043587cf, 0x044a5262, 0x045f1cf6, 0x024289ef,
+                   0x02575483)))
 Currency('bitcoin-cash', ticker='bch', validator='Base58Check',
          networks=dict(
              main=(0x00, 0x05), test=(0x6f, 0xc4)))
 Currency('litecoin', ticker='ltc', validator='Base58Check',
          networks=dict(
-             main=(0x30, 0x05, 0x32, 0x019da462, 0x01b26ef6,  
-                   0x488B21E, 0x49D7CB2, 0x4B24746, 0x295B43F, 0x2AA7ED3), 
+             main=(0x30, 0x05, 0x32, 0x019da462, 0x01b26ef6,
+                   0x488B21E, 0x49D7CB2, 0x4B24746, 0x295B43F, 0x2AA7ED3),
              test=(0x6f, 0xc4, 0x0436f6e1)))
 Currency('dogecoin', ticker='doge', validator='Base58Check',
          networks=dict(
@@ -95,14 +99,14 @@ Currency('ethereum', ticker='eth', validator='Ethereum')
 Currency('ether-zero', ticker='etz', validator='Ethereum')
 Currency('ethereum-classic', ticker='etc', validator='Ethereum')
 
-Currency('zcash', ticker='zec', validator='Base58Check', 
+Currency('zcash', ticker='zec', validator='Base58Check',
          networks=dict(
              main=(0x1cb8, 0x1cbd), test=(0x1d25, 0x1cba)))
-Currency('tezos', ticker='xtz', validator='Base58Check', 
+Currency('tezos', ticker='xtz', validator='Base58Check',
          networks=dict(
-             both=(0x06a19f, 0x06a1a1, 0x06a1a4, 0x25a79 )),
+             both=(0x06a19f, 0x06a1a1, 0x06a1a4, 0x25a79)),
          address_types=dict(
-             originated_account=(0x025a79,), 
+             originated_account=(0x025a79,),
              implicit_account=(0x06a19f, 0x06a1a1, 0x06a1a4,)))
 Currency('horizen', ticker='zen', validator='Base58Check',
          networks=dict(
@@ -110,34 +114,35 @@ Currency('horizen', ticker='zen', validator='Base58Check',
 Currency('eos', ticker='eos', validator='EOS')
 Currency('stellar', ticker='xlm', validator='Stellar')
 Currency('ravencoin', ticker='rvn', validator='Base58Check',
-        networks=dict(
-             main=(0x3c,0x0488B21E), test=(0x6f,0x043587CF)))
+         networks=dict(
+             main=(0x3c, 0x0488B21E), test=(0x6f, 0x043587CF)))
 Currency('tronix', ticker='trx', validator='Base58Check',
-        networks=dict(
+         networks=dict(
              main=(0x41,), test=(0xa0,)))
 Currency('decred', ticker='dcr', validator='DecredCheck',
-        networks=dict(
-             main=(0x073f,0x071a,0x02fda926), test=(0x0f21,0x0efc,0x043587d1)),
-        address_types=dict(
-             address=(0x073f,0x0f21), ticket=(0x071a,0x0efc),
-             xpubkey=(0x02fda926,0x043587d1)))
+         networks=dict(
+             main=(0x073f, 0x071a, 0x02fda926),
+             test=(0x0f21, 0x0efc, 0x043587d1)),
+         address_types=dict(
+             address=(0x073f, 0x0f21), ticket=(0x071a, 0x0efc),
+             xpubkey=(0x02fda926, 0x043587d1)))
 Currency('cardano', ticker='ada', validator='CardanoCheck',
-        networks=dict(
+         networks=dict(
              main=(0x82D818584283581C,), test=(0x82D818582883581C,)))
 
 Currency('cosmos', ticker='atom', validator='CosmosCheck')
 
-Currency('binancecoin', ticker='bnb', validator='BNBCheck',
-        networks=dict(
-            main=("bnb",), test=("tbnb",)))
+Currency('binancecoin', ticker='bnb', validator='Bech32Check',
+         networks=dict(
+             main=("bnb",), test=("tbnb",)))
 
 Currency('groestlcoin', ticker='grs', validator='GRSCheck',
-        networks=dict(
-            main=('F','3'), test=('m','n')))
+         networks=dict(
+             main=('F', '3'), test=('m', 'n')))
 
 Currency('ontology', ticker='ont', validator='Base58Check',
-        networks=dict(
-            both=(0x17,)))
+         networks=dict(
+             both=(0x17,)))
 Currency('boscoin', ticker='bos', validator='Stellar')
 Currency('vechain', ticker='vet', validator='Ethereum')
 Currency('terramoney', ticker='luna', validator='TerraMoney')

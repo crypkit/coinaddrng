@@ -115,13 +115,12 @@ class GRSValidator(ValidatorBase):
 
 @attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidator)
-class BNBValidator(ValidatorBase):
+class Bech32CheckValidator(ValidatorBase):
 
-    name = 'BNBCheck'
+    name = 'Bech32Check'
 
     def validate(self):
         decoded_address = bech32.bech32_decode(self.request.address.decode('utf-8'))
-        hrp = decoded_address[0]
         data = decoded_address[1]
 
         if self.network == "":
@@ -131,7 +130,6 @@ class BNBValidator(ValidatorBase):
             return False
 
         return True
-
 
     def validate_extended(self):
         return False
@@ -289,28 +287,16 @@ class Base58CheckValidator(ValidatorBase):
 
         return True
 
-
     @property
     def network(self):
         """Return network derived from network version bytes."""
-        if len(self.request.address) == 0:
-            return ''
-        try:
-            abytes = base58check.b58decode(
-                self.request.address, **self.request.extras)
-        except ValueError:
-            return ''
+        abytes = base58check.b58decode(
+            self.request.address, **self.request.extras)
 
+        nbyte = abytes[0]
         for name, networks in self.request.currency.networks.items():
-            for netw in networks:
-                if netw != 0:
-                    # count the prefix length in bytes
-                    prefixlen = math.ceil(math.floor((math.log(netw) / math.log(2)) + 1) / 8)
-                else:
-                    prefixlen = 1
-                address_prefix = [x for x in bytearray(abytes[:prefixlen])]
-                if prefixtodec(address_prefix) == netw:
-                    return name
+            if nbyte in networks:
+                return name
         return ''
 
     @property
@@ -339,7 +325,6 @@ class Base58CheckValidator(ValidatorBase):
             return 'address'
         else:
             return ''
-
 
 
 @attr.s(frozen=True, slots=True, cmp=False)
@@ -559,6 +544,53 @@ class EthereumValidator(ValidatorBase):
 
 
 @attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class BitcoinBasedValidator(ValidatorBase):
+    """Validates bitcoin based crytocurrency addresses."""
+
+    name = 'BitcoinBasedCheck'
+
+    @property
+    def base58_validator(self):
+        return Base58CheckValidator(self.request)
+
+    @property
+    def bech32_validator(self):
+        return Bech32CheckValidator(self.request)
+
+    def validate(self):
+        base58_res = self.base58_validator.validate()
+        if base58_res:
+            return True
+
+        bech32_res = self.bech32_validator.validate()
+        if bech32_res:
+            return True
+
+        return False
+
+    def validate_extended(self):
+        base58_res = self.base58_validator.validate_extended()
+        if base58_res:
+            return True
+
+        bech32_res = self.bech32_validator.validate_extended()
+        if bech32_res:
+            return True
+
+        return False
+
+    @property
+    def network(self):
+        base58_res = self.base58_validator.network
+        if base58_res:
+            return base58_res
+
+        bech32_res = self.bech32_validator.network
+        return bech32_res
+
+
+@attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidationRequest)
 class ValidationRequest:
     """Contain the data and helpers as an immutable request object."""
@@ -597,14 +629,25 @@ class ValidationRequest:
     def execute(self):
         """Execute this request and return the result."""
         validator = Validators.get(self.currency.validator)(self)
+
+        valid = False
+        network = ''
+        is_extended = False
+        try:
+            valid = validator.validate()
+            network = validator.network
+            is_extended = validator.validate_extended()
+        except:
+            pass
+
         return ValidationResult(
             name=self.currency.name,
             ticker=self.currency.ticker,
             address=self.address,
-            valid=validator.validate(),
-            network=validator.network,
+            valid=valid,
+            network=network,
             address_type=validator.address_type,
-            is_extended=validator.validate_extended()
+            is_extended=is_extended
             )
 
 
