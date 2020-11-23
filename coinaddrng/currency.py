@@ -98,6 +98,7 @@ Currency('ripple', ticker='xrp', validator='Base58Check',
 Currency('ethereum', ticker='eth', validator='Ethereum')
 Currency('ether-zero', ticker='etz', validator='Ethereum')
 Currency('ethereum-classic', ticker='etc', validator='Ethereum')
+Currency('xdai', ticker='stake', validator='Ethereum')
 
 Currency('zcash', ticker='zec', validator='Base58Check',
          networks=dict(
