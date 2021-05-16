@@ -147,3 +147,5 @@ Currency('ontology', ticker='ont', validator='Base58Check',
 Currency('boscoin', ticker='bos', validator='Stellar')
 Currency('vechain', ticker='vet', validator='Ethereum')
 Currency('terramoney', ticker='luna', validator='TerraMoney')
+Currency('polkadot', ticker='dot', validator='PolkadotCheck')
+Currency('kusama', ticker='ksm', validator='KusamaCheck')

@@ -8,9 +8,10 @@ Various validation machinery for validating cryptocurrency addresses.
 """
 
 import re
-from hashlib import sha256
+from hashlib import sha256, blake2b
 import functools
 import operator
+from typing import Optional
 
 from zope.interface import implementer, provider
 import attr
@@ -726,3 +727,88 @@ def prefixtodec(prefix):
         total += prefix[-i]*multiplier
         multiplier *= 256
     return total+prefix[-1]
+
+
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class SS58Validator(ValidatorBase):
+
+    name = 'SS58Check'
+    valid_ss58_format = None
+
+    def validate(self):
+        try:
+            self._ss58_decode(self.request.address, valid_ss58_format=self.valid_ss58_format)
+        except ValueError:
+            return False
+
+        return True
+
+    # https://github.com/paritytech/substrate/wiki/External-Address-Format-(SS58)
+    def _ss58_decode(self, address: bytes, valid_ss58_format: Optional[int] = None) -> str:
+        address_decoded = base58check.b58decode(address)
+
+        if address_decoded[0] & 0b0100_0000:
+            ss58_format_length = 2
+            ss58_format = ((address_decoded[0] & 0b0011_1111) << 2) | (address_decoded[1] >> 6) | \
+                          ((address_decoded[1] & 0b0011_1111) << 8)
+        else:
+            ss58_format_length = 1
+            ss58_format = address_decoded[0]
+
+        if ss58_format in [46, 47]:
+            raise ValueError(f"{ss58_format} is a reserved SS58 format")
+
+        if valid_ss58_format is not None and ss58_format != valid_ss58_format:
+            raise ValueError("Invalid SS58 format")
+
+        # Determine checksum length according to length of address string
+        if len(address_decoded) in [3, 4, 6, 10]:
+            checksum_length = 1
+        elif len(address_decoded) in [5, 7, 11, 34 + ss58_format_length, 35 + ss58_format_length]:
+            checksum_length = 2
+        elif len(address_decoded) in [8, 12]:
+            checksum_length = 3
+        elif len(address_decoded) in [9, 13]:
+            checksum_length = 4
+        elif len(address_decoded) in [14]:
+            checksum_length = 5
+        elif len(address_decoded) in [15]:
+            checksum_length = 6
+        elif len(address_decoded) in [16]:
+            checksum_length = 7
+        elif len(address_decoded) in [17]:
+            checksum_length = 8
+        else:
+            raise ValueError("Invalid address length")
+
+        checksum = blake2b(b'SS58PRE' + address_decoded[0:-checksum_length]).digest()
+
+        if checksum[0:checksum_length] != address_decoded[-checksum_length:]:
+            raise ValueError("Invalid checksum")
+
+        return address_decoded[ss58_format_length:len(address_decoded) - checksum_length].hex()
+
+    def validate_extended(self):
+        return True
+
+    @property
+    def network(self):
+        return ''
+
+
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class PolkadotValidator(SS58Validator):
+
+    name = 'PolkadotCheck'
+    valid_ss58_format = 0
+
+
+@attr.s(frozen=True, slots=True, cmp=False)
+@implementer(IValidator)
+class KusamaValidator(SS58Validator):
+
+    name = 'KusamaCheck'
+    valid_ss58_format = 2
+

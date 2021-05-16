@@ -1,4 +1,10 @@
+zope
 attrs>=17.4.0
 pysha3>=1.0.2
 base58check>=1.0.1
 zope.interface>=4.4.3
+bech32
+cbor
+blake256
+groestlcoin_hash2
+crc16
