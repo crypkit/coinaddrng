@@ -41,6 +41,8 @@ A cryptocurrency address inspection/validation library for python.
 * tronix
 * vechain
 * zcash
+* polkadot
+* kusama
 
 ## Installation
 ```shell
