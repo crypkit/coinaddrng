@@ -36,7 +36,7 @@ TEST_DATA = [
      b'0x900Ff070D37657cdF8016BcA0D60CB493EBf7f83', 'both'),
     ('terramoney', 'luna', b'terra1v5hrqlv8dqgzvy0pwzqzg0gxy899rm4kdn0jp4', ''),
     ('polkadot', 'dot', b'12gX42C4Fj1wgtfgoP624zeHrcPBqzhb4yAENyvFdGX6EUnN', ''),
-    ('kusama', 'ksm', b'GLdQ4D4wkeEJUX8DBT9HkpycFVYQZ3fmJyQ5ZgBRxZ4LD3S', '')
+    ('kusama', 'ksm', b'GLdQ4D4wkeEJUX8DBT9HkpycFVYQZ3fmJyQ5ZgBRxZ4LD3S', ''),
 ]
 
 WRONG_DATA = [

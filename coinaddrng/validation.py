@@ -729,6 +729,12 @@ def prefixtodec(prefix):
     return total+prefix[-1]
 
 
+@attr.s(frozen=True, slots=True, auto_attribs=True)
+class SS58Address:
+    format: int
+    length: int
+
+
 @attr.s(frozen=True, slots=True, cmp=False)
 @implementer(IValidator)
 class SS58Validator(ValidatorBase):
@@ -741,53 +747,65 @@ class SS58Validator(ValidatorBase):
             self._ss58_decode(self.request.address, valid_ss58_format=self.valid_ss58_format)
         except ValueError:
             return False
-
-        return True
-
-    # https://github.com/paritytech/substrate/wiki/External-Address-Format-(SS58)
-    def _ss58_decode(self, address: bytes, valid_ss58_format: Optional[int] = None) -> str:
-        address_decoded = base58check.b58decode(address)
-
-        if address_decoded[0] & 0b0100_0000:
-            ss58_format_length = 2
-            ss58_format = ((address_decoded[0] & 0b0011_1111) << 2) | (address_decoded[1] >> 6) | \
-                          ((address_decoded[1] & 0b0011_1111) << 8)
         else:
-            ss58_format_length = 1
-            ss58_format = address_decoded[0]
+            return True
 
-        if ss58_format in [46, 47]:
-            raise ValueError(f"{ss58_format} is a reserved SS58 format")
+        return False
 
-        if valid_ss58_format is not None and ss58_format != valid_ss58_format:
-            raise ValueError("Invalid SS58 format")
+    @staticmethod
+    def _decode_ss58_address_format(address: bytes) -> SS58Address:
+        if address[0] & 0b0100_0000:
+            format_length = 2
+            ss58_format = ((address[0] & 0b0011_1111) << 2) | (address[1] >> 6) | \
+                          ((address[1] & 0b0011_1111) << 8)
+        else:
+            format_length = 1
+            ss58_format = address[0]
 
-        # Determine checksum length according to length of address string
-        if len(address_decoded) in [3, 4, 6, 10]:
-            checksum_length = 1
-        elif len(address_decoded) in [5, 7, 11, 34 + ss58_format_length, 35 + ss58_format_length]:
-            checksum_length = 2
-        elif len(address_decoded) in [8, 12]:
-            checksum_length = 3
-        elif len(address_decoded) in [9, 13]:
-            checksum_length = 4
-        elif len(address_decoded) in [14]:
-            checksum_length = 5
-        elif len(address_decoded) in [15]:
-            checksum_length = 6
-        elif len(address_decoded) in [16]:
-            checksum_length = 7
-        elif len(address_decoded) in [17]:
-            checksum_length = 8
+        return SS58Address(ss58_format, format_length)
+
+    @staticmethod
+    def _get_checksum_length(decoded_base58_len: int, ss58_address: SS58Address) -> int:
+        if decoded_base58_len in (3, 4, 6, 10):
+            return 1
+        elif decoded_base58_len in (5, 7, 11, 34 + ss58_address.length, 35 + ss58_address.length):
+            return 2
+        elif decoded_base58_len in (8, 12):
+            return 3
+        elif decoded_base58_len in (9, 13):
+            return 4
+        elif decoded_base58_len == 14:
+            return 5
+        elif decoded_base58_len == 15:
+            return 6
+        elif decoded_base58_len == 16:
+            return 7
+        elif decoded_base58_len == 17:
+            return 8
         else:
             raise ValueError("Invalid address length")
 
-        checksum = blake2b(b'SS58PRE' + address_decoded[0:-checksum_length]).digest()
+    # https://github.com/paritytech/substrate/wiki/External-Address-Format-(SS58)
+    def _ss58_decode(self, address: bytes, valid_ss58_format: Optional[int] = None) -> str:
+        decoded_base58 = base58check.b58decode(address)
 
-        if checksum[0:checksum_length] != address_decoded[-checksum_length:]:
+        ss58_address = self._decode_ss58_address_format(decoded_base58)
+
+        if ss58_address.format in [46, 47]:
+            raise ValueError(f"{ss58_address.format} is a reserved SS58 format")
+
+        if valid_ss58_format is not None and ss58_address.format != valid_ss58_format:
+            raise ValueError("Invalid SS58 format")
+
+        # Determine checksum length according to length of address string
+        checksum_length = self._get_checksum_length(len(decoded_base58), ss58_address)
+
+        checksum = blake2b(b'SS58PRE' + decoded_base58[:-checksum_length]).digest()
+
+        if checksum[0:checksum_length] != decoded_base58[-checksum_length:]:
             raise ValueError("Invalid checksum")
 
-        return address_decoded[ss58_format_length:len(address_decoded) - checksum_length].hex()
+        return decoded_base58[ss58_address.length:len(decoded_base58) - checksum_length].hex()
 
     def validate_extended(self):
         return True
