@@ -750,10 +750,8 @@ class SS58Validator(ValidatorBase):
         else:
             return True
 
-        return False
-
     @staticmethod
-    def _decode_ss58_address_format(address: bytes) -> SS58Address:
+    def _decode_ss58_address_format(address: bytes, valid_ss58_format: Optional[int]) -> SS58Address:
         if address[0] & 0b0100_0000:
             format_length = 2
             ss58_format = ((address[0] & 0b0011_1111) << 2) | (address[1] >> 6) | \
@@ -762,7 +760,13 @@ class SS58Validator(ValidatorBase):
             format_length = 1
             ss58_format = address[0]
 
-        return SS58Address(ss58_format, format_length)
+        if ss58_format in [46, 47]:
+            raise ValueError(f"{ss58_format} is a reserved SS58 format")
+
+        if valid_ss58_format is not None and ss58_format != valid_ss58_format:
+            raise ValueError("Invalid SS58 format")
+
+        return SS58Address(format=ss58_format, length=format_length)
 
     @staticmethod
     def _get_checksum_length(decoded_base58_len: int, ss58_address: SS58Address) -> int:
@@ -789,13 +793,7 @@ class SS58Validator(ValidatorBase):
     def _ss58_decode(self, address: bytes, valid_ss58_format: Optional[int] = None) -> str:
         decoded_base58 = base58check.b58decode(address)
 
-        ss58_address = self._decode_ss58_address_format(decoded_base58)
-
-        if ss58_address.format in [46, 47]:
-            raise ValueError(f"{ss58_address.format} is a reserved SS58 format")
-
-        if valid_ss58_format is not None and ss58_address.format != valid_ss58_format:
-            raise ValueError("Invalid SS58 format")
+        ss58_address = self._decode_ss58_address_format(decoded_base58, valid_ss58_format)
 
         # Determine checksum length according to length of address string
         checksum_length = self._get_checksum_length(len(decoded_base58), ss58_address)
