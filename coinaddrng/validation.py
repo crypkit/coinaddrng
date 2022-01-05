@@ -20,7 +20,7 @@ import base58check
 import math
 from binascii import unhexlify, crc32
 import base64
-import crc16
+from fastcrc import crc16
 from blake256 import blake256
 import cbor
 import bech32
@@ -440,7 +440,7 @@ class StellarValidator(ValidatorBase):
         if version_byte != 6 << 3:  # ed25519PublicKey
             return False
 
-        checksum = crc16.crc16xmodem(payload)
+        checksum = crc16.xmodem(payload)
 
         if checksum != expected_checksum:
             return False

@@ -37,6 +37,7 @@ TEST_DATA = [
     ('terramoney', 'luna', b'terra1v5hrqlv8dqgzvy0pwzqzg0gxy899rm4kdn0jp4', ''),
     ('polkadot', 'dot', b'12gX42C4Fj1wgtfgoP624zeHrcPBqzhb4yAENyvFdGX6EUnN', ''),
     ('kusama', 'ksm', b'GLdQ4D4wkeEJUX8DBT9HkpycFVYQZ3fmJyQ5ZgBRxZ4LD3S', ''),
+    ('stellar', 'xlm', b'GA7YNBW5CBTJZ3ZZOWX3ZNBKD6OE7A7IHUQVWMY62W2ZBG2SGZVOOPVH', ''),
 ]
 
 WRONG_DATA = [
