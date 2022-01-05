@@ -78,11 +78,12 @@ Currency('bitcoin-sv', ticker='bsv', validator='Base58Check',
 Currency('bitcoin-cash', ticker='bch', validator='Base58Check',
          networks=dict(
              main=(0x00, 0x05), test=(0x6f, 0xc4)))
-Currency('litecoin', ticker='ltc', validator='Base58Check',
+Currency('litecoin', ticker='ltc', validator='BitcoinBasedCheck',
          networks=dict(
              main=(0x30, 0x05, 0x32, 0x019da462, 0x01b26ef6,
-                   0x488B21E, 0x49D7CB2, 0x4B24746, 0x295B43F, 0x2AA7ED3),
-             test=(0x6f, 0xc4, 0x0436f6e1)))
+                   0x488B21E, 0x49D7CB2, 0x4B24746, 0x295B43F,
+                   0x2AA7ED3, 'ltc'),
+             test=(0x6f, 0xc4, 0x0436f6e1, 'tltc')))
 Currency('dogecoin', ticker='doge', validator='Base58Check',
          networks=dict(
              main=(0x1e, 0x16), test=(0x71, 0xc4)))
