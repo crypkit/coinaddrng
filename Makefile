@@ -2,7 +2,7 @@ all: help
 
 help: 
 	@echo 'NAME'
-	@echo '    Makefile for coinaddrng'
+	@echo '    Makefile for coinaddrvalid'
 	@echo ''
 	@echo 'SYNOPSIS'
 	@echo '    make [options]'
@@ -12,16 +12,16 @@ help:
 	@echo ''
 	@echo '    dist                 builds both binary and source distribution'
 	@echo ''
-	@echo '    install              installs blockapi library'
+	@echo '    install              installs coinaddrvalid library'
 	@echo ''
-	@echo '    uninstall            uninstalls blockapi library'
+	@echo '    uninstall            uninstalls coinaddrvalid library'
 
 install:
 	pip3 install --upgrade .
 
 
 uninstall:
-	pip3 uninstall -y coinaddrng
+	pip3 uninstall -y coinaddrvalid
 
 
 dist:

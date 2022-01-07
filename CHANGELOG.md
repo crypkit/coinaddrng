@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.0] - 2022-01-07
+### Added
+- LTC segwit address support
+
+### Fixed
+- Fix wheel build by replacing crc16 with fastcrc 
+
 ## [1.0.1] - 2018-04-16
 ### Added
 - Start using zope.interfaces for all objects.

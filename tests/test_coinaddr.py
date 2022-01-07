@@ -1,13 +1,13 @@
 import unittest
 
-import coinaddrng
+import coinaddrvalid
 
-from coinaddrng.interfaces import (
+from coinaddrvalid.interfaces import (
     INamedSubclassContainer, INamedInstanceContainer, ICurrency, IValidator,
     IValidationRequest, IValidationResult
     )
-from coinaddrng.currency import Currencies, Currency
-from coinaddrng.validation import (
+from coinaddrvalid.currency import Currencies, Currency
+from coinaddrvalid.validation import (
     Validators, ValidatorBase, ValidationRequest, ValidationResult,
     Base58CheckValidator, EthereumValidator
     )
@@ -54,7 +54,7 @@ class TestCoinaddr(unittest.TestCase):
     def test_validation_by_name(self):
         for name, ticker, addr, net in TEST_DATA:
             with self.subTest(name=name, address=addr, net=net):
-                res = coinaddrng.validate(name, addr)
+                res = coinaddrvalid.validate(name, addr)
                 self.assertEqual(name, res.name)
                 self.assertEqual(ticker, res.ticker)
                 self.assertEqual(addr, res.address)
@@ -63,13 +63,13 @@ class TestCoinaddr(unittest.TestCase):
 
         for name, ticker, addr, net in WRONG_DATA:
             with self.subTest(name=name, address=addr, net=net):
-                res = coinaddrng.validate(name, addr)
+                res = coinaddrvalid.validate(name, addr)
                 self.assertNotEqual(True, res.valid)
 
     def test_validation_by_ticker(self):
         for name, ticker, addr, net in TEST_DATA:
             with self.subTest(name=name, ticker=ticker, address=addr, net=net):
-                res = coinaddrng.validate(ticker, addr)
+                res = coinaddrvalid.validate(ticker, addr)
                 self.assertEqual(name, res.name)
                 self.assertEqual(ticker, res.ticker)
                 self.assertEqual(addr, res.address)
@@ -80,7 +80,7 @@ class TestCoinaddr(unittest.TestCase):
     def test_validation_from_text(self):
         for name, ticker, addr, net in TEST_DATA:
             with self.subTest(name=name, address=addr, net=net):
-                res = coinaddrng.validate(name, addr.decode())
+                res = coinaddrvalid.validate(name, addr.decode())
                 self.assertEqual(name, res.name)
                 self.assertEqual(ticker, res.ticker)
                 self.assertEqual(addr, res.address)
@@ -91,7 +91,7 @@ class TestCoinaddr(unittest.TestCase):
         for currency in Currencies.instances.values():
             for addr in WRONG_ADDRESSES:
                 with self.subTest(name=currency.name, address=addr):
-                    res = coinaddrng.validate(currency.name, addr)
+                    res = coinaddrvalid.validate(currency.name, addr)
                     self.assertEqual(res.valid, False)
 
 
@@ -111,7 +111,7 @@ class TestExtendingCoinaddr(unittest.TestCase):
             ]
         for name, ticker, addr, net in test_data:
             with self.subTest(name=name, ticker=ticker, address=addr, net=net):
-                res = coinaddrng.validate(name, addr)
+                res = coinaddrvalid.validate(name, addr)
                 self.assertEqual(name, res.name)
                 self.assertEqual(ticker, res.ticker)
                 self.assertEqual(addr, res.address)
@@ -119,7 +119,7 @@ class TestExtendingCoinaddr(unittest.TestCase):
                 self.assertEqual(net, res.network)
 
             with self.subTest(name=name, ticker=ticker, address=addr, net=net):
-                res = coinaddrng.validate(ticker, addr)
+                res = coinaddrvalid.validate(ticker, addr)
                 self.assertEqual(name, res.name)
                 self.assertEqual(ticker, res.ticker)
                 self.assertEqual(addr, res.address)

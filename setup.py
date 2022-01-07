@@ -2,7 +2,7 @@ import re
 from setuptools import setup, find_packages
 
 
-with open('coinaddrng/__init__.py', 'rt') as fd:
+with open('coinaddrvalid/__init__.py', 'rt') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 
@@ -18,7 +18,7 @@ except ImportError:
 
 
 setup(
-    name='coinaddrng',
+    name='coinaddrvalid',
     version=version,
     description='A crypto-currency address inspection/validation library.',
     #long_description=long_description,
@@ -31,13 +31,13 @@ setup(
         'validation',
         'inspection',
     ],
-    author='Joe Black',
-    author_email='me@joeblack.nyc',
-    maintainer='Joe Black',
-    maintainer_email='me@joeblack.nyc',
-    url='https://github.com/joeblackwaslike/coinaddr',
+    author='Mohammad Aghamir',
+    author_email='maghamir@nobitex.net',
+    maintainer='Mohammad Aghamir',
+    maintainer_email='maghamir@nobitex.net',
+    url='https://github.com/nobitex/coinaddrvalid',
     download_url=(
-        'https://github.com/joeblackwaslike/coinaddr/tarball/v%s' % version),
+        'https://github.com/nobitex/coinaddrvalid/tarball/v%s' % version),
     license='MIT',
     install_requires=[
         'attrs>=17.4.0',
