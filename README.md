@@ -1,11 +1,13 @@
 # CoinAddrValid
 [![Github Repo](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/nobitex/coinaddrvalid) [![Pypi Version](https://img.shields.io/pypi/v/coinaddrvalid.svg)](https://pypi.python.org/pypi/coinaddrvalid) [![Pypi License](https://img.shields.io/pypi/l/coinaddrvalid.svg)](https://pypi.python.org/pypi/coinaddrvalid) [![Pypi Wheel](https://img.shields.io/pypi/wheel/coinaddrvalid.svg)](https://pypi.python.org/pypi/coinaddrvalid) [![Pypi Versions](https://img.shields.io/pypi/pyversions/coinaddrng.svg)](https://pypi.python.org/pypi/coinaddrvalid)
 
-
 ## Maintainer
-Devmons s.r.o. - *Maintainer of this fork* - [coinaddrvalid](https://github.com/nobitex/coinaddrvalid)
+Mohammad Aghamir - *Maintainer of this repository* - [coinaddrvalid](https://github.com/nobitex/coinaddrvalid)
 
-See also the list of [contributors](https://github.com/nobitex/coinaddrvalid/contributors) who participated in this project.
+## Fork Maintainer
+Devmons s.r.o. - *Maintainer of this fork* - [coinaddrng](https://github.com/crypkit/coinaddrng)
+
+See also the list of [contributors](https://github.com/crypkit/coinaddrng/contributors) who participated in this project.
 
 ## Original Maintainer
 Joe Black | <me@joeblack.nyc> | [github](https://github.com/joeblackwaslike)
