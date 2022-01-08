@@ -1,9 +1,9 @@
 import unittest
 
-from coinaddrvalid.interfaces import (
+from coinaddrvalidator.interfaces import (
     INamedSubclassContainer, IValidator, IValidationRequest, IValidationResult
     )
-from coinaddrvalid.validation import (
+from coinaddrvalidator.validation import (
     Validators, ValidatorBase, ValidationRequest, ValidationResult,
     Base58CheckValidator, EthereumValidator
     )

@@ -2,7 +2,7 @@ all: help
 
 help: 
 	@echo 'NAME'
-	@echo '    Makefile for coinaddrvalid'
+	@echo '    Makefile for coinaddrvalidor'
 	@echo ''
 	@echo 'SYNOPSIS'
 	@echo '    make [options]'
@@ -12,16 +12,16 @@ help:
 	@echo ''
 	@echo '    dist                 builds both binary and source distribution'
 	@echo ''
-	@echo '    install              installs coinaddrvalid library'
+	@echo '    install              installs coinaddrvalidor library'
 	@echo ''
-	@echo '    uninstall            uninstalls coinaddrvalid library'
+	@echo '    uninstall            uninstalls coinaddrvalidor library'
 
 install:
 	pip3 install --upgrade .
 
 
 uninstall:
-	pip3 uninstall -y coinaddrvalid
+	pip3 uninstall -y coinaddrvalidor
 
 
 dist:
