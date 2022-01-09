@@ -45,7 +45,6 @@ setup(
         'pysha3>=1.0.2',
         'base58check>=1.0.1',
         'zope.interface>=4.4.3',
-        'fastcrc>=0.1.1',
         'blake256>=0.1.1',
         'cbor>=1.0.0',
         'bech32>=1.1.0',
