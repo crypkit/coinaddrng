@@ -20,12 +20,12 @@ import base58check
 import math
 from binascii import unhexlify, crc32
 import base64
-from fastcrc import crc16
 from blake256 import blake256
 import cbor
 import bech32
 import groestlcoin_hash2
 
+from .encoding import crc16
 from .interfaces import (
     INamedSubclassContainer, IValidator, IValidationRequest,
     IValidationResult, ICurrency
@@ -443,7 +443,7 @@ class StellarValidator(ValidatorBase):
         if version_byte != 6 << 3:  # ed25519PublicKey
             return False
 
-        checksum = crc16.xmodem(payload)
+        checksum = crc16.crc16xmodem(payload)
 
         if checksum != expected_checksum:
             return False
