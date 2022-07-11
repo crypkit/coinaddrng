@@ -1,8 +1,10 @@
-# CoinAddrNG
-[![Github Repo](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/crypkit/coinaddrng) [![Pypi Version](https://img.shields.io/pypi/v/coinaddrng.svg)](https://pypi.python.org/pypi/coinaddrng) [![Pypi License](https://img.shields.io/pypi/l/coinaddrng.svg)](https://pypi.python.org/pypi/coinaddrng) [![Pypi Wheel](https://img.shields.io/pypi/wheel/coinaddrng.svg)](https://pypi.python.org/pypi/coinaddrng) [![Pypi Versions](https://img.shields.io/pypi/pyversions/coinaddrng.svg)](https://pypi.python.org/pypi/coinaddrng)
-
+# CoinAddrValidator
+[![Github Repo](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/nobitex/coinaddrvalidator) [![Pypi Version](https://img.shields.io/pypi/v/coinaddrvalidator.svg)](https://pypi.python.org/pypi/coinaddrvalidator) [![Pypi License](https://img.shields.io/pypi/l/coinaddrvalidator.svg)](https://pypi.python.org/pypi/coinaddrvalidator) [![Pypi Wheel](https://img.shields.io/pypi/wheel/coinaddrvalidator.svg)](https://pypi.python.org/pypi/coinaddrvalidator) [![Pypi Versions](https://img.shields.io/pypi/pyversions/coinaddrvalidator.svg)](https://pypi.python.org/pypi/coinaddrvalidator)
 
 ## Maintainer
+Mohammad Aghamir - *Maintainer of this repository* - [coinaddrvalidator](https://github.com/nobitex/coinaddrvalidator)
+
+## Fork Maintainer
 Devmons s.r.o. - *Maintainer of this fork* - [coinaddrng](https://github.com/crypkit/coinaddrng)
 
 See also the list of [contributors](https://github.com/crypkit/coinaddrng/contributors) who participated in this project.
@@ -46,13 +48,13 @@ A cryptocurrency address inspection/validation library for python.
 
 ## Installation
 ```shell
-pip3 install coinaddrng
+pip3 install coinaddrvalidator
 ```
 
 ## Usage
 ```python
->>> import coinaddrng
->>> coinaddrng.validate('btc', b'1BoatSLRHtKNngkdXEeobR76b53LETtpyT')
+>>> import coinaddrvalidator
+>>> coinaddrvalidator.validate('btc', b'1BoatSLRHtKNngkdXEeobR76b53LETtpyT')
 ValidationResult(name='bitcoin', ticker='btc', address=b'1BoatSLRHtKNngkdXEeobR76b53LETtpyT', valid=True, network='main', is_extended=False, address_type='address')
 ```
 
@@ -64,7 +66,7 @@ format, which is returned as address_type. If there's none, 'address' is being r
 #### Currencies
 To add a new currency, simply instantiate a new `coinaddr.currency.Currency` class.  It will be automatically registered.
 ```python
-from coinaddrng import Currency
+from coinaddrvalidator import Currency
 Currency('decred', ticker='dcr', validator='DecredCheck',
         networks=dict(
             main=(0x073f,0x071a,0x02fda926), test=(0x0f21,0x0efc,0x043587d1)),

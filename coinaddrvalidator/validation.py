@@ -20,12 +20,12 @@ import base58check
 import math
 from binascii import unhexlify, crc32
 import base64
-import crc16
 from blake256 import blake256
 import cbor
 import bech32
 import groestlcoin_hash2
 
+from .encoding import crc16
 from .interfaces import (
     INamedSubclassContainer, IValidator, IValidationRequest,
     IValidationResult, ICurrency
@@ -291,8 +291,11 @@ class Base58CheckValidator(ValidatorBase):
     @property
     def network(self):
         """Return network derived from network version bytes."""
-        abytes = base58check.b58decode(
-            self.request.address, **self.request.extras)
+        try:
+            abytes = base58check.b58decode(
+                self.request.address, **self.request.extras)
+        except ValueError:
+            return ''
 
         nbyte = abytes[0]
         for name, networks in self.request.currency.networks.items():

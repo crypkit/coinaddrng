@@ -7,4 +7,3 @@ bech32
 cbor
 blake256
 groestlcoin_hash2
-crc16
