@@ -1,5 +1,6 @@
 import re
 from setuptools import setup, find_packages
+import sys
 
 
 with open('coinaddrng/__init__.py', 'rt') as fd:
@@ -15,6 +16,21 @@ try:
 except ImportError:
     with open('README.md') as fd:
         long_description = fd.read()
+
+
+install_requires = [
+    'attrs>=17.4.0',
+    'base58check>=1.0.1',
+    'zope.interface>=4.4.3',
+    'crc16>=0.1.1',
+    'blake256>=0.1.1',
+    'cbor>=1.0.0',
+    'bech32>=1.1.0',
+    'groestlcoin-hash2>=1.1.1'
+]
+
+if sys.version_info < (3, 6):
+    install_requires.append('pysha3>=1.0.2')
 
 
 setup(
@@ -39,17 +55,7 @@ setup(
     download_url=(
         'https://github.com/joeblackwaslike/coinaddr/tarball/v%s' % version),
     license='MIT',
-    install_requires=[
-        'attrs>=17.4.0',
-        'pysha3>=1.0.2',
-        'base58check>=1.0.1',
-        'zope.interface>=4.4.3',
-        'crc16>=0.1.1',
-        'blake256>=0.1.1',
-        'cbor>=1.0.0',
-        'bech32>=1.1.0',
-        'groestlcoin-hash2>=1.1.1'
-    ],
+    install_requires=install_requires,
     zip_safe=False,
     packages=find_packages(),
     package_data={'': ['LICENSE']},
