@@ -42,7 +42,7 @@ setup(
     license='MIT',
     install_requires=[
         'attrs>=17.4.0',
-        'pysha3>=1.0.2',
+        'pycryptodome>=3.6.1',
         'base58check>=1.0.1',
         'zope.interface>=4.4.3',
         'blake256>=0.1.1',
