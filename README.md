@@ -45,6 +45,11 @@ A cryptocurrency address inspection/validation library for python.
 * zcash
 
 ## Installation
+From `setup.py`:
+```commandline
+python setup.py install
+```
+Pip:
 ```shell
 pip3 install coinaddrng
 ```

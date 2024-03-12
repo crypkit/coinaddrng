@@ -7,7 +7,7 @@ notifications:
     on_success: never
     on_failure: always
 
-install: pip install -r requirements.txt
+install: python3 setup.py install
 
 before_script: pip install pytest
 
