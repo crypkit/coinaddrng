@@ -41,7 +41,7 @@ setup(
     license='MIT',
     install_requires=[
         'attrs>=17.4.0',
-        'pysha3>=1.0.2',
+        'pycryptodome',
         'base58check>=1.0.1',
         'zope.interface>=4.4.3',
         'crc16>=0.1.1',
@@ -62,7 +62,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: >=3.6',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development',
