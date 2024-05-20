@@ -291,8 +291,11 @@ class Base58CheckValidator(ValidatorBase):
     @property
     def network(self):
         """Return network derived from network version bytes."""
-        abytes = base58check.b58decode(
-            self.request.address, **self.request.extras)
+        try:
+            abytes = base58check.b58decode(
+                self.request.address, **self.request.extras)
+        except ValueError:
+            return ''
 
         nbyte = abytes[0]
         for name, networks in self.request.currency.networks.items():
