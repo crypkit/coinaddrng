@@ -40,7 +40,7 @@ setup(
         'https://github.com/joeblackwaslike/coinaddr/tarball/v%s' % version),
     license='MIT',
     install_requires=[
-        'attrs>=17.4.0',
+        'attrs>=17.4.0,<=22.1.0',
         'base58check>=1.0.1',
         'bech32',
         'blake256',
