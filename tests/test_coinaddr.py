@@ -23,6 +23,7 @@ TEST_DATA = [
     ('bitcoin-cash', 'bch', b'3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC', 'main'),
     ('litecoin', 'ltc', b'LeF6vC9k1qfFDEj6UGjM5e4fwHtiKsakTd', 'main'),
     ('litecoin', 'ltc', b'mkwV3DZkgYwKaXkphBtcXAjsYQEqZ8aB3x', 'test'),
+    ('litecoin', 'ltc', b'ltc1qs54v679auflz9y88nleyy6qknalwwmfx6kcf8z', 'main'),
     ('neocoin', 'neo', b'AL9fzczwjV6ynoFAJVz4fBDu4NYLG6MBwm', 'both'),
     ('dogecoin', 'doge', b'DAnBU2rLkUgQb1ZLBJd6Bm5pZ45RN4TQC4', 'main'),
     ('dogecoin', 'doge', b'njscgXBB3HUUTXH7njim1Uw82PF9da4R8k', 'test'),
